@@ -1,0 +1,14 @@
+INFO:root:ETL started
+INFO:root:Fetching reports for USA
+INFO:root:Saved 59 rows for USA
+INFO:root:ETL finished
+INFO:root:ETL started
+INFO:root:Fetching reports for HUN
+INFO:root:Saved 1 rows for HUN
+INFO:root:ETL finished
+INFO:root:ETL started
+INFO:root:Fetching reports for USA
+INFO:root:Saved 59 rows for USA
+INFO:root:Fetching reports for DEU
+INFO:root:Saved 17 rows for DEU
+INFO:root:ETL finished
