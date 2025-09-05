@@ -12,3 +12,24 @@ INFO:root:Saved 59 rows for USA
 INFO:root:Fetching reports for DEU
 INFO:root:Saved 17 rows for DEU
 INFO:root:ETL finished
+INFO:root:ETL started
+INFO:root:ETL started
+INFO:root:Fetching reports for USA
+INFO:root:ETL started
+INFO:root:Fetching reports for USA
+INFO:root:ETL started
+INFO:root:Fetching reports for USA
+INFO:root:ETL started
+INFO:root:Fetching reports for USA
+INFO:root:Saved 59 rows for USA
+INFO:root:Fetching reports for DEU
+INFO:root:Saved 17 rows for DEU
+INFO:root:ETL finished
+INFO:root:ETL started
+INFO:root:Fetching reports for USA
+INFO:root:Saved 59 rows for USA
+INFO:root:Fetching reports for DEU
+INFO:root:Saved 17 rows for DEU
+INFO:root:Fetching reports for CHN
+INFO:root:Saved 34 rows for CHN
+INFO:root:ETL finished

@@ -2,9 +2,9 @@ db:
   host: localhost
   port: 5432
   database: covid_db
-  user: user
+  user: antonradchenko
   password: ""
 
-countries: [USA, DEU]  # ISO3
+countries: [USA, DEU, CHN]  # ISO3
 batch_size: 100
 log_file: logs/etl.log

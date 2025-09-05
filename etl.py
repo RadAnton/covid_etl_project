@@ -1,6 +1,7 @@
 import pandas as pd
 from utils import fetch_json
 from datetime import datetime
+from psycopg2.extras import execute_batch
 
 API_BASE = "https://covid-api.com/api"
 
@@ -34,25 +35,42 @@ def process_reports(df):
     return df
 
 def save_reports_to_db(conn, df):
-    cursor = conn.cursor()
-    for _, row in df.iterrows():
-        cursor.execute("""
-            INSERT INTO covid_reports 
-            (iso3, province, date, confirmed, deaths, recovered, daily_confirmed, daily_deaths, daily_recovered, load_ts)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-            ON CONFLICT (iso3, province, date) DO UPDATE
-            SET confirmed = EXCLUDED.confirmed,
-                deaths = EXCLUDED.deaths,
-                recovered = EXCLUDED.recovered,
-                daily_confirmed = EXCLUDED.daily_confirmed,
-                daily_deaths = EXCLUDED.daily_deaths,
-                daily_recovered = EXCLUDED.daily_recovered,
-                load_ts = EXCLUDED.load_ts
-        """, (
-            row['iso3'], row['province'], row['date'],
-            row['confirmed'], row['deaths'], row['recovered'],
-            row['daily_confirmed'], row['daily_deaths'], row['daily_recovered'],
-            row['load_ts']
-        ))
+    with conn.cursor() as cur:
+        data = [
+            (
+                int(row.confirmed) if row.confirmed is not None else None,
+                int(row.deaths) if row.deaths is not None else None,
+                int(row.recovered) if row.recovered is not None else None,
+                row.date,
+                row.province,
+                row.iso3,
+                int(row.daily_confirmed) if row.daily_confirmed is not None else None,
+                int(row.daily_deaths) if row.daily_deaths is not None else None,
+                int(row.daily_recovered) if row.daily_recovered is not None else None,
+                row.load_ts,
+            )
+            for row in df.itertuples(index=False)
+        ]
+
+        query = """
+        INSERT INTO covid_reports (
+            confirmed, deaths, recovered, date,
+            province, iso3,
+            daily_confirmed, daily_deaths, daily_recovered,
+            load_ts
+        )
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        ON CONFLICT (iso3, province, date)
+        DO UPDATE SET
+            confirmed = EXCLUDED.confirmed,
+            deaths = EXCLUDED.deaths,
+            recovered = EXCLUDED.recovered,
+            daily_confirmed = EXCLUDED.daily_confirmed,
+            daily_deaths = EXCLUDED.daily_deaths,
+            daily_recovered = EXCLUDED.daily_recovered,
+            load_ts = EXCLUDED.load_ts
+        """
+
+        execute_batch(cur, query, data, page_size=500)
+
     conn.commit()
-    cursor.close()
