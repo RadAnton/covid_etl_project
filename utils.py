@@ -2,6 +2,7 @@ import requests
 import logging
 import psycopg2
 import yaml
+import os
 
 def load_config(path='config.yaml'):
     with open(path) as f:
@@ -14,13 +15,13 @@ def setup_logger(log_file):
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
 
-def get_db_connection(cfg):
+def get_db_connection(_cfg=None):
     conn = psycopg2.connect(
-        host=cfg['db']['host'],
-        port=cfg['db']['port'],
-        dbname=cfg['db']['database'],
-        user=cfg['db']['user'],
-        password=cfg['db']['password']
+        host=os.getenv("DB_HOST", "localhost"),
+        port=os.getenv("DB_PORT", "5432"),
+        database=os.getenv("DB_NAME", "covid_db"),
+        user=os.getenv("DB_USER", "antonradchenko"),
+        password=os.getenv("DB_PASSWORD", "secret123"),
     )
     return conn
 
